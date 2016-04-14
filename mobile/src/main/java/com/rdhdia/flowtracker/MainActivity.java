@@ -1,4 +1,4 @@
-package com.rdhdia.flowtrackerforlidar;
+package com.rdhdia.flowtracker;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

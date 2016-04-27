@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
 public class SessionActivity extends AppCompatActivity {
 
     @Bind(R.id.btnAdd) Button addReading;
-    @Bind(R.id.btnStartSession) Button startSession;
+    @Bind(R.id.btnStart) Button startSession;
     @Bind(R.id.edtReadingValue) EditText readingInput;
 
     @Override

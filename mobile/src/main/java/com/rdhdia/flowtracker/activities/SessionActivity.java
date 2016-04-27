@@ -22,6 +22,8 @@ public class SessionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
+
+
     }
 }
 

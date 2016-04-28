@@ -15,5 +15,6 @@ public class MainActivity extends AppCompatActivity {
         intent.setClassName(BuildConfig.APPLICATION_ID,
                 BuildConfig.APPLICATION_ID + ".activities.SessionActivity");
         startActivity(intent);
+        finish();
     }
 }

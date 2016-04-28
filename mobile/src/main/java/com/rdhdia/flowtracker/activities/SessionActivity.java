@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.rdhdia.flowtracker.R;
@@ -16,8 +17,8 @@ import butterknife.ButterKnife;
 
 public class SessionActivity extends AppCompatActivity {
 
-    private static final long SEVEN_MINUTES = 420000;
-    private static final long THREE_MINUTES = 180000;
+    private static final long SEVEN_MINUTES = 7000; // correct value is 420000
+    private static final long THREE_MINUTES = 3000; // correct value is 180000
     private static final long ONE_MINUTE = 60000;
     private static final long ONE_SECOND = 1000;
 
@@ -29,6 +30,8 @@ public class SessionActivity extends AppCompatActivity {
     @Bind(R.id.lblFlowCountdown) TextView flowTime;
     @Bind(R.id.lblRestCountdown) TextView restTime;
     @Bind(R.id.recyclerReadings) RecyclerView recyclerReadings;
+    @Bind(R.id.progressFlow) ProgressBar progressFlow;
+    @Bind(R.id.progressRest) ProgressBar progressRest;
 
     private CountDownTimer flowTimer;
     private CountDownTimer restTimer;
@@ -43,6 +46,10 @@ public class SessionActivity extends AppCompatActivity {
         startSession.setOnClickListener(new StartSessionListener());
         pauseSession.setOnClickListener(new PauseSessionListener());
         stopSession.setOnClickListener(new StopSessionListener());
+
+        progressFlow.setMax((int)SEVEN_MINUTES);
+        progressRest.setMax((int)THREE_MINUTES);
+
     }
 
     @Override
@@ -52,13 +59,13 @@ public class SessionActivity extends AppCompatActivity {
         // 418000 millis
         // 418 seconds
 
-
         flowTimer = new CountDownTimer(SEVEN_MINUTES, ONE_SECOND) {
             @Override
             public void onTick(long millisUntilFinished) {
                 long minute = millisUntilFinished / ONE_MINUTE;
                 long seconds = (millisUntilFinished / 1000) % 60;
 
+                progressFlow.setProgress((int)SEVEN_MINUTES - (int)millisUntilFinished);
                 if ( minute > 0 ) {
                     flowTime.setText(minute + ":" + seconds);
                 } else {
@@ -68,19 +75,31 @@ public class SessionActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-
+                progressFlow.setProgress(progressFlow.getMax());
+                // start 3 minute rest timer
+                restTimer.start();
             }
         };
 
-        restTimer = new CountDownTimer(3000, 1000) {
+        restTimer = new CountDownTimer(THREE_MINUTES, ONE_SECOND) {
             @Override
             public void onTick(long millisUntilFinished) {
+                long minute = millisUntilFinished / ONE_MINUTE;
+                long seconds = (millisUntilFinished / 1000) % 60;
 
+                progressRest.setProgress((int)THREE_MINUTES - (int)millisUntilFinished );
+                if ( minute > 0 ) {
+                    restTime.setText(minute + ":" + seconds);
+                } else {
+                    restTime.setText("00:" + seconds);
+                }
             }
 
             @Override
             public void onFinish() {
+                progressRest.setProgress(progressRest.getMax());
 
+                flowTimer.start();
             }
         };
 

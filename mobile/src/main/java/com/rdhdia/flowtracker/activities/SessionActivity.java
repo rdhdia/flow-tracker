@@ -39,7 +39,7 @@ public class SessionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_session);
         ButterKnife.bind(this);
 
         addReading.setOnClickListener(new AddReadingListener());
@@ -55,9 +55,6 @@ public class SessionActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        // 418000 millis
-        // 418 seconds
 
         flowTimer = new CountDownTimer(SEVEN_MINUTES, ONE_SECOND) {
             @Override

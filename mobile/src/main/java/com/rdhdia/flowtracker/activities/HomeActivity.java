@@ -1,8 +1,10 @@
 package com.rdhdia.flowtracker.activities;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +17,7 @@ import butterknife.ButterKnife;
 
 public class HomeActivity extends AppCompatActivity {
 
-    @Bind(R.id.btnNewSession) Button newSession;
+    @Bind(R.id.btnStartNewSession) FloatingActionButton newSession;
     @Bind(R.id.recyclerSessions) RecyclerView recyclerSessions;
 
     @Override
@@ -24,6 +26,10 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
+        recyclerSessions.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(HomeActivity.this,
+                LinearLayoutManager.VERTICAL, false);
+        recyclerSessions.setLayoutManager(layoutManager);
 
     }
 

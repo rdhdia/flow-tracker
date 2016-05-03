@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
+<!-- ?android:attr/buttonBarButtonStyle-->
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -75,7 +75,8 @@
             android:gravity="center"
             android:text="7:00"
             android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp" />
+            android:layout_marginRight="4dp"
+            android:padding="20dp" />
 
         <TextView
             android:id="@+id/lblRestCountdown"
@@ -85,7 +86,8 @@
             android:gravity="center"
             android:text="3:00"
             android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp" />
+            android:layout_marginRight="4dp"
+            android:padding="20dp" />
 
     </LinearLayout>
 

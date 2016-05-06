@@ -3,6 +3,7 @@ package com.rdhdia.flowtracker.activities;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -10,11 +11,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rdhdia.flowtracker.R;
+import com.rdhdia.flowtracker.models.Reading;
+import com.rdhdia.flowtracker.models.Session;
+import com.rdhdia.flowtracker.views.adapters.ReadingAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class SessionActivity extends AppCompatActivity {
 
@@ -37,12 +48,24 @@ public class SessionActivity extends AppCompatActivity {
 
     private CountDownTimer flowTimer;
     private CountDownTimer restTimer;
+    private Realm realm;
+    private Session session;
+    private List<Reading> readings;
+    private int orderCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session);
         ButterKnife.bind(this);
+
+        // Create a RealmConfiguration which is to locate Realm file in package's "files" directory.
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(SessionActivity.this).build();
+        // Get a Realm instance for this thread
+        realm = Realm.getInstance(realmConfig);
+
+        // Initialize a list of readings for this session
+        readings = new ArrayList<>();
 
         addReading.setOnClickListener(new AddReadingListener());
         startSession.setOnClickListener(new StartSessionListener());
@@ -52,11 +75,21 @@ public class SessionActivity extends AppCompatActivity {
         progressFlow.setMax((int)SEVEN_MINUTES);
         progressRest.setMax((int)THREE_MINUTES);
 
+        recyclerReadings.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(SessionActivity.this,
+                LinearLayoutManager.VERTICAL, false);
+        recyclerReadings.setLayoutManager(layoutManager);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        // Create new session
+        session = new Session();
+
+        // generate new session id here
 
         flowTimer = new CountDownTimer(SEVEN_MINUTES, ONE_SECOND) {
             @Override
@@ -112,11 +145,23 @@ public class SessionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        showReadings();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    private void showReadings() {
+        RealmResults<Reading> readings = realm.where(Reading.class).findAll();
+
+        if ( readings.size() > 0 ) {
+            ReadingAdapter adapter = new ReadingAdapter(readings, SessionActivity.this);
+            recyclerReadings.setAdapter(adapter);
+        } else {
+            Toast.makeText(SessionActivity.this, "No readings found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private class StartSessionListener implements View.OnClickListener {
@@ -144,7 +189,21 @@ public class SessionActivity extends AppCompatActivity {
     private class AddReadingListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
+            String input = readingInput.getText().toString();
 
+            // generate time (millis)
+            long time = System.currentTimeMillis();
+
+            // Create reading
+            realm.beginTransaction();
+            Reading currentReading = realm.createObject(Reading.class);
+            currentReading.setTime(String.valueOf(time));
+            currentReading.setFlowValue(input);
+            currentReading.setSessionOrder(orderCount);
+            orderCount++;
+            realm.commitTransaction();
+
+            showReadings();
         }
     }
 

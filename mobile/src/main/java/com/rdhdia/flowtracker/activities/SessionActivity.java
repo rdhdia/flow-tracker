@@ -50,7 +50,6 @@ public class SessionActivity extends AppCompatActivity {
     private CountDownTimer restTimer;
     private Realm realm;
     private Session session;
-    private List<Reading> readings;
     private int orderCount;
 
     @Override
@@ -63,9 +62,6 @@ public class SessionActivity extends AppCompatActivity {
         RealmConfiguration realmConfig = new RealmConfiguration.Builder(SessionActivity.this).build();
         // Get a Realm instance for this thread
         realm = Realm.getInstance(realmConfig);
-
-        // Initialize a list of readings for this session
-        readings = new ArrayList<>();
 
         addReading.setOnClickListener(new AddReadingListener());
         startSession.setOnClickListener(new StartSessionListener());
@@ -194,17 +190,25 @@ public class SessionActivity extends AppCompatActivity {
             // generate time (millis)
             long time = System.currentTimeMillis();
 
+            Reading reading = new Reading();
+            reading.setId(getNextKey());
+            reading.setTime(String.valueOf(time));
+            reading.setFlowValue(input);
+            reading.setSessionOrder(orderCount);
+
             // Create reading
             realm.beginTransaction();
-            Reading currentReading = realm.createObject(Reading.class);
-            currentReading.setTime(String.valueOf(time));
-            currentReading.setFlowValue(input);
-            currentReading.setSessionOrder(orderCount);
-            orderCount++;
+            realm.copyToRealm(reading);
             realm.commitTransaction();
+            orderCount++;
 
             showReadings();
         }
+    }
+
+    public int getNextKey()
+    {
+        return realm.where(Reading.class).max("id").intValue() + 1;
     }
 
 

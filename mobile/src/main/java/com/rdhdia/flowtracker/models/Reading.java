@@ -2,6 +2,7 @@ package com.rdhdia.flowtracker.models;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 /**
  * Created by ruffyheredia on 14/04/2016.
@@ -9,7 +10,8 @@ import io.realm.annotations.PrimaryKey;
 public class Reading extends RealmObject {
 
     @PrimaryKey
-    private String id;
+    private int id;
+
     private String time;
     private String flowValue;
     private int sessionOrder;
@@ -17,18 +19,18 @@ public class Reading extends RealmObject {
     public Reading() {
     }
 
-    public Reading(String id, String time, String flowValue, int sessionOrder) {
+    public Reading(int id, String time, String flowValue, int sessionOrder) {
         this.id = id;
         this.time = time;
         this.flowValue = flowValue;
         this.sessionOrder = sessionOrder;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

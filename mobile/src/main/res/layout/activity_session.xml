@@ -25,7 +25,8 @@
             android:layout_weight="1"
             android:text="Add"
             android:backgroundTint="@color/buttonPrimaryBackground"
-            android:textColor="@color/buttonTextEnabled" />
+            android:textColor="@color/buttonTextDisabled"
+            android:enabled="false" />
 
     </LinearLayout>
     
@@ -41,8 +42,8 @@
             android:text="START"
             android:id="@+id/btnStart"
             android:backgroundTint="@color/buttonDarkBackground"
-            android:textColor="@color/buttonTextDisabled"
-            android:enabled="false" />
+            android:textColor="@color/buttonTextEnabled"
+            android:enabled="true" />
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -50,7 +51,8 @@
             android:text="PAUSE"
             android:id="@+id/btnPause"
             android:backgroundTint="@color/buttonSecondaryBackground"
-            android:textColor="@color/buttonTextEnabled" />
+            android:textColor="@color/buttonTextDisabled"
+            android:enabled="false" />
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -58,7 +60,8 @@
             android:text="STOP"
             android:id="@+id/btnStop"
             android:backgroundTint="@color/buttonSecondaryBackground"
-            android:textColor="@color/buttonTextEnabled" />
+            android:textColor="@color/buttonTextDisabled"
+            android:enabled="false" />
 
     </LinearLayout>
 

@@ -172,6 +172,9 @@ public class SessionActivity extends AppCompatActivity {
         public void onClick(View view) {
             flowTimer.cancel();
             restTimer.cancel();
+
+            // Save data to Realm
+            // clean all data
         }
     }
 

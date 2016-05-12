@@ -10,16 +10,17 @@ import android.widget.TextView;
 import com.rdhdia.flowtracker.R;
 import com.rdhdia.flowtracker.models.Session;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.RealmResults;
 
 /**
  * Created by rdhdia on 06/05/2016.
  */
 public class SessionAdapter  extends RecyclerView.Adapter<SessionAdapter.ViewHolder> {
 
-    private RealmResults<Session> items;
+    private List<Session> items;
     private Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -34,7 +35,7 @@ public class SessionAdapter  extends RecyclerView.Adapter<SessionAdapter.ViewHol
 
     }
 
-    public SessionAdapter(RealmResults items, Context context) {
+    public SessionAdapter(List<Session> items, Context context) {
         this.items = items;
         this.context = context;
     }

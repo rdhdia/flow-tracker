@@ -1,8 +1,9 @@
 package com.rdhdia.flowtracker.activities;
 
-import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,18 +15,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rdhdia.flowtracker.R;
+import com.rdhdia.flowtracker.models.Project;
 import com.rdhdia.flowtracker.models.Reading;
 import com.rdhdia.flowtracker.models.Session;
+import com.rdhdia.flowtracker.utils.DatabaseHandler;
 import com.rdhdia.flowtracker.views.adapters.ReadingAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
 
 public class SessionActivity extends AppCompatActivity {
 
@@ -48,20 +47,18 @@ public class SessionActivity extends AppCompatActivity {
 
     private CountDownTimer flowTimer;
     private CountDownTimer restTimer;
-    private Realm realm;
     private Session session;
     private int orderCount;
+    private DatabaseHandler db;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session);
         ButterKnife.bind(this);
-
-        // Create a RealmConfiguration which is to locate Realm file in package's "files" directory.
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder(SessionActivity.this).build();
-        // Get a Realm instance for this thread
-        realm = Realm.getInstance(realmConfig);
+        db = new DatabaseHandler(this);
+        bundle = getIntent().getExtras();
 
         addReading.setOnClickListener(new AddReadingListener());
         startSession.setOnClickListener(new StartSessionListener());
@@ -150,7 +147,7 @@ public class SessionActivity extends AppCompatActivity {
     }
 
     private void showReadings() {
-        RealmResults<Reading> readings = realm.where(Reading.class).findAll();
+        List<Reading> readings = db.getAllReading();
 
         if ( readings.size() > 0 ) {
             ReadingAdapter adapter = new ReadingAdapter(readings, SessionActivity.this);
@@ -160,10 +157,58 @@ public class SessionActivity extends AppCompatActivity {
         }
     }
 
+    private void enableControlButtons() {
+        setAddButtonEnabled(true);
+        setPauseButtonEnabled(true);
+        setStopButtonEnabled(true);
+    }
+
+    private void setAddButtonEnabled(boolean enabled) {
+        if ( enabled ) {
+            addReading.setEnabled(true);
+            addReading.setTextColor(ContextCompat.getColor(this, R.color.buttonTextEnabled));
+        } else {
+            addReading.setEnabled(false);
+            addReading.setTextColor(ContextCompat.getColor(this, R.color.buttonTextDisabled));
+        }
+    }
+
+    private void setPauseButtonEnabled(boolean enabled) {
+        if ( enabled ) {
+            pauseSession.setEnabled(true);
+            pauseSession.setTextColor(ContextCompat.getColor(this, R.color.buttonTextEnabled));
+        } else {
+            pauseSession.setEnabled(false);
+            pauseSession.setTextColor(ContextCompat.getColor(this, R.color.buttonTextDisabled));
+        }
+    }
+
+    private void setStopButtonEnabled(boolean enabled) {
+        if ( enabled ) {
+            stopSession.setEnabled(true);
+            stopSession.setTextColor(ContextCompat.getColor(this, R.color.buttonTextEnabled));
+        } else {
+            stopSession.setEnabled(false);
+            stopSession.setTextColor(ContextCompat.getColor(this, R.color.buttonTextDisabled));
+        }
+    }
+
+    private void setStartButtonEnabled(boolean enabled) {
+        if ( enabled ) {
+            startSession.setEnabled(true);
+            startSession.setTextColor(ContextCompat.getColor(this, R.color.buttonTextEnabled));
+        } else {
+            startSession.setEnabled(false);
+            startSession.setTextColor(ContextCompat.getColor(this, R.color.buttonTextDisabled));
+        }
+    }
+
     private class StartSessionListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             flowTimer.start();
+            enableControlButtons();
+            setStartButtonEnabled(false);
         }
     }
 
@@ -173,8 +218,7 @@ public class SessionActivity extends AppCompatActivity {
             flowTimer.cancel();
             restTimer.cancel();
 
-            // Save data to Realm
-            // clean all data
+            // Handle all readings, save to session and store to database
         }
     }
 
@@ -198,20 +242,17 @@ public class SessionActivity extends AppCompatActivity {
             reading.setTime(String.valueOf(time));
             reading.setFlowValue(input);
             reading.setSessionOrder(orderCount);
+            reading.setSessionId(bundle.getInt("session_id"));
 
-            // Create reading
-            realm.beginTransaction();
-            realm.copyToRealm(reading);
-            realm.commitTransaction();
+            db.addReading(reading);
             orderCount++;
 
             showReadings();
         }
     }
 
-    public int getNextKey()
-    {
-        return realm.where(Reading.class).max("id").intValue() + 1;
+    public int getNextKey() {
+        return db.getReadingCount() + 1;
     }
 
 

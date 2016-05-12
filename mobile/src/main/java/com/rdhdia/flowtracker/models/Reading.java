@@ -1,29 +1,25 @@
 package com.rdhdia.flowtracker.models;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
-
 /**
  * Created by ruffyheredia on 14/04/2016.
  */
-public class Reading extends RealmObject {
+public class Reading {
 
-    @PrimaryKey
     private int id;
-
     private String time;
     private String flowValue;
     private int sessionOrder;
+    private int sessionId;
 
     public Reading() {
     }
 
-    public Reading(int id, String time, String flowValue, int sessionOrder) {
+    public Reading(int id, String time, String flowValue, int sessionOrder, int sessionId) {
         this.id = id;
         this.time = time;
         this.flowValue = flowValue;
         this.sessionOrder = sessionOrder;
+        this.sessionId = sessionId;
     }
 
     public int getId() {
@@ -56,5 +52,13 @@ public class Reading extends RealmObject {
 
     public void setSessionOrder(int sessionOrder) {
         this.sessionOrder = sessionOrder;
+    }
+
+    public int getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(int sessionId) {
+        this.sessionId = sessionId;
     }
 }

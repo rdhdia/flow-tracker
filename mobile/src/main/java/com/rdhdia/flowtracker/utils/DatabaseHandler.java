@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "flow_tracker";
@@ -60,6 +60,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String READING_TIME = "time";
     private static final String READING_FLOW_VALUE = "flowValue";
     private static final String READING_SESSION_ORDER = "sessionOrder";
+    private static final String READING_SESSION_ID = "sessionId";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -95,7 +96,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + READING_ID + " INTEGER PRIMARY KEY,"
                 + READING_TIME + " TEXT,"
                 + READING_FLOW_VALUE + " TEXT,"
-                + READING_SESSION_ORDER + " INTEGER"
+                + READING_SESSION_ORDER + " INTEGER,"
+                + READING_SESSION_ID + " INTEGER"
                 + ")";
 
         db.execSQL(CREATE_SESSION_TABLE);
@@ -186,6 +188,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(READING_TIME, reading.getTime());
         values.put(READING_FLOW_VALUE, reading.getFlowValue());
         values.put(READING_SESSION_ORDER, reading.getSessionOrder());
+        values.put(READING_SESSION_ID, reading.getSessionId());
 
         // Insert the row
         db.insert(TABLE_READING, null, values);
@@ -278,7 +281,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if ( cursor != null ) cursor.moveToFirst();
 
         Reading reading = new Reading(Integer.valueOf(cursor.getString(0)), cursor.getString(1),
-                cursor.getString(2), Integer.valueOf(cursor.getString(3)));
+                cursor.getString(2), Integer.valueOf(cursor.getString(3)),
+                Integer.valueOf(cursor.getString(4)));
 
         cursor.close();
         return reading;
@@ -403,6 +407,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 reading.setTime(cursor.getString(1));
                 reading.setFlowValue(cursor.getString(2));
                 reading.setSessionOrder(Integer.valueOf(cursor.getString(3)));
+                reading.setSessionId(Integer.valueOf(cursor.getString(4)));
 
                 readingList.add(reading);
             } while ( cursor.moveToNext() );
@@ -535,6 +540,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(READING_TIME, reading.getTime());
         values.put(READING_FLOW_VALUE, reading.getFlowValue());
         values.put(READING_SESSION_ORDER, reading.getSessionOrder());
+        values.put(READING_SESSION_ID, reading.getSessionId());
 
         int result = db.update(TABLE_READING, values, READING_ID + "=?",
                 new String[] { String.valueOf(reading.getId()) });

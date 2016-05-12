@@ -1,14 +1,10 @@
 package com.rdhdia.flowtracker.models;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
 /**
  * Created by ruffyheredia on 14/04/2016.
  */
-public class Session extends RealmObject {
+public class Session {
 
-    @PrimaryKey
     private String id;
     private String bridgeId;
     private String date;

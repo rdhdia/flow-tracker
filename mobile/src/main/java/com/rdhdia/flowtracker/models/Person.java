@@ -1,14 +1,10 @@
 package com.rdhdia.flowtracker.models;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
 /**
  * Created by ruffyheredia on 14/04/2016.
  */
-public class Person extends RealmObject {
+public class Person {
 
-    @PrimaryKey
     private String id;
     private String fullName;
     private String projectId;

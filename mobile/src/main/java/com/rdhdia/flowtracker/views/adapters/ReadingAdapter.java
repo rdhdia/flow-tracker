@@ -58,13 +58,23 @@ public class ReadingAdapter extends RecyclerView.Adapter<ReadingAdapter.ViewHold
 
         Reading reading = items.get(position);
 
+        if ( position == 0 ) {
+            holder.difference.setText("0");
+        } else {
+            Reading previousReading = items.get(position-1);
+            int previous = Integer.valueOf(previousReading.getFlowValue());
+            int current = Integer.valueOf(reading.getFlowValue());
+            int difference = current - previous;
+            holder.difference.setText(String.valueOf(difference));
+        }
+
         holder.time.setText(reading.getReadableTime());
 
         holder.date.setText(reading.getReadableDate());
 
         holder.value.setText(reading.getFlowValue());
 
-        holder.difference.setText(String.valueOf(reading.getSessionOrder()));
+
 
     }
 }

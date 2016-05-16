@@ -21,6 +21,7 @@ import com.rdhdia.flowtracker.models.Session;
 import com.rdhdia.flowtracker.utils.DatabaseHandler;
 import com.rdhdia.flowtracker.views.adapters.ReadingAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -29,7 +30,7 @@ import butterknife.ButterKnife;
 public class SessionActivity extends AppCompatActivity {
 
     private static final String TAG = "LOGGING";
-    private static final long SEVEN_MINUTES = 420000; // correct value is 420000
+    private static final long SEVEN_MINUTES = 7000; // correct value is 420000
     private static final long THREE_MINUTES = 3000; // correct value is 180000
     private static final long ONE_MINUTE = 60000;
     private static final long ONE_SECOND = 1000;
@@ -49,7 +50,9 @@ public class SessionActivity extends AppCompatActivity {
     private CountDownTimer restTimer;
     private Session currentSession;
     private Reading currentReading;
+    private List<Reading> sessionReadings;
     private int orderCount;
+    private int readingCount;
     private DatabaseHandler db;
     private Bundle bundle;
 
@@ -116,8 +119,10 @@ public class SessionActivity extends AppCompatActivity {
 
         // Initialize object placeholders
         currentReading = new Reading();
-        currentSession = new Session();
-
+        int sessionId = bundle.getInt("session_id");
+        currentSession = new Session(String.valueOf(sessionId));
+        sessionReadings = new ArrayList<Reading>();
+        readingCount = db.getReadingCount();
     }
 
     @Override
@@ -170,6 +175,8 @@ public class SessionActivity extends AppCompatActivity {
             public void onFinish() {
                 progressRest.setProgress(progressRest.getMax());
 
+                currentReading = new Reading();
+                currentReading.setTime(String.valueOf(System.currentTimeMillis()));
                 flowTimer.start();
             }
         };
@@ -196,7 +203,7 @@ public class SessionActivity extends AppCompatActivity {
     }
 
     private void showReadings() {
-        List<Reading> readings = db.getAllReading();
+        List<Reading> readings = sessionReadings;
 
         if ( readings.size() > 0 ) {
             ReadingAdapter adapter = new ReadingAdapter(readings, SessionActivity.this);
@@ -271,6 +278,14 @@ public class SessionActivity extends AppCompatActivity {
             restTimer.cancel();
 
             // Handle all readings, save to session and store to database
+            db.addSession(currentSession);
+
+            for ( Reading reading : sessionReadings ) {
+                db.addReading(reading);
+            }
+
+            Toast.makeText(SessionActivity.this, "Added new session!", Toast.LENGTH_LONG).show();
+            finish();
         }
     }
 
@@ -286,17 +301,14 @@ public class SessionActivity extends AppCompatActivity {
         public void onClick(View view) {
             String input = readingInput.getText().toString();
 
-            // generate time (millis)
-            long time = System.currentTimeMillis();
-
             Reading reading = new Reading();
             reading.setId(getNextKey());
             reading.setTime(currentReading.getTime());
             reading.setFlowValue(input);
             reading.setSessionOrder(orderCount);
-            reading.setSessionId(bundle.getInt("session_id"));
+            reading.setSessionId(Integer.valueOf(currentSession.getId()));
 
-            db.addReading(reading);
+            sessionReadings.add(reading);
             orderCount++;
 
             showReadings();
@@ -304,9 +316,8 @@ public class SessionActivity extends AppCompatActivity {
     }
 
     public int getNextKey() {
-        return db.getReadingCount() + 1;
+        return ++readingCount;
     }
-
 
 }
 

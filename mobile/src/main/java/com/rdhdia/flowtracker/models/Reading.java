@@ -20,6 +20,10 @@ public class Reading {
     public Reading() {
     }
 
+    public Reading(int id) {
+        this.id = id;
+    }
+
     public Reading(int id, String time, String flowValue, int sessionOrder, int sessionId) {
         this.id = id;
         this.time = time;

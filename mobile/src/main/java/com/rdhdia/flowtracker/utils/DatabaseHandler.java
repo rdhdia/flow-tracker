@@ -418,6 +418,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return readingList;
     }
 
+    // Retrieve readings based on Session
+    public List<Reading> getAllReadingBySessionId(int sessionId) {
+        List<Reading> readingList = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_READING
+                + " WHERE " + READING_SESSION_ID + "=?";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(sessionId) } );
+
+        if ( cursor.moveToFirst() ) {
+            do {
+                Reading reading = new Reading();
+                reading.setId(Integer.valueOf(cursor.getString(0)));
+                reading.setTime(cursor.getString(1));
+                reading.setFlowValue(cursor.getString(2));
+                reading.setSessionOrder(Integer.valueOf(cursor.getString(3)));
+                reading.setSessionId(Integer.valueOf(cursor.getString(4)));
+
+                readingList.add(reading);
+            } while ( cursor.moveToNext() );
+        }
+
+        db.close();
+        cursor.close();
+        return readingList;
+    }
+
     // Get Session count
     public int getSessionCount() {
         String countQuery = "SELECT * FROM " + TABLE_SESSION;

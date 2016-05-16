@@ -14,6 +14,10 @@ public class Session {
     public Session() {
     }
 
+    public Session(String id) {
+        this.id = id;
+    }
+
     public Session(String id, String bridgeId, String date, String location, String notes) {
         this.id = id;
         this.bridgeId = bridgeId;

@@ -7,6 +7,11 @@
     android:layout_margin="24dp"
     tools:context="com.rdhdia.flowtracker.activities.HomeActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerSessions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnStartNewSession"
         android:layout_height="wrap_content"
@@ -15,10 +20,5 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:clickable="true" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerSessions"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </RelativeLayout>

@@ -1,12 +1,16 @@
 package com.rdhdia.flowtracker.views.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.rdhdia.flowtracker.BuildConfig;
 import com.rdhdia.flowtracker.R;
 import com.rdhdia.flowtracker.models.Session;
 
@@ -27,6 +31,9 @@ public class SessionAdapter  extends RecyclerView.Adapter<SessionAdapter.ViewHol
 
         @Bind(R.id.lblSessionId)
         TextView sessionId;
+
+        @Bind(R.id.layoutSession)
+        LinearLayout layout;
 
         public ViewHolder(View view) {
             super(view);
@@ -54,8 +61,19 @@ public class SessionAdapter  extends RecyclerView.Adapter<SessionAdapter.ViewHol
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Session session = items.get(position);
+        final Session session = items.get(position);
 
         holder.sessionId.setText(session.getId());
+
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClassName(BuildConfig.APPLICATION_ID,
+                        BuildConfig.APPLICATION_ID + ".activities.SessionDetailsActivity");
+                intent.putExtra("session_id", session.getId());
+                ((Activity)context).startActivity(intent);
+            }
+        });
     }
 }

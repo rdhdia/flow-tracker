@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Flow Tracker for Lidar</string>
+    <string name="quit_seesion">Quit Session</string>
+    <string name="really_quit_session">Are You Sure?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

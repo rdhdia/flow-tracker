@@ -74,7 +74,5 @@ public class ReadingAdapter extends RecyclerView.Adapter<ReadingAdapter.ViewHold
 
         holder.value.setText(reading.getFlowValue());
 
-
-
     }
 }

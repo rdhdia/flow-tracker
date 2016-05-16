@@ -1,12 +1,15 @@
 package com.rdhdia.flowtracker.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -317,6 +320,32 @@ public class SessionActivity extends AppCompatActivity {
 
     public int getNextKey() {
         return ++readingCount;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //Handle the back button
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            //Ask the user if they want to quit
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.quit_seesion)
+                    .setMessage(R.string.really_quit_session)
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Stop the activity
+                            flowTimer.cancel();
+                            restTimer.cancel();
+                            SessionActivity.this.finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.no, null)
+                    .show();
+            return true;
+        }
+        else {
+            return super.onKeyDown(keyCode, event);
+        }
     }
 
 }

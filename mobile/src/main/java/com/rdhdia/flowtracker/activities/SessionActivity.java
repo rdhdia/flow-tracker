@@ -47,10 +47,51 @@ public class SessionActivity extends AppCompatActivity {
 
     private CountDownTimer flowTimer;
     private CountDownTimer restTimer;
-    private Session session;
+    private Session currentSession;
+    private Reading currentReading;
     private int orderCount;
     private DatabaseHandler db;
     private Bundle bundle;
+
+    /*
+
+    Initial States:
+    Flow Value input field - disabled
+    Add button - disabled
+    Start button - enabled
+    Pause button - disabled
+    Stop button - disabled
+
+    Pressing the Start button:
+    Take note of starting time (will be used for Reading value, store in class variable)
+    Flow timer starts
+    Start button - disabled
+    Pause button - enabled
+    Stop button - enabled
+
+    After end of 7-minute Flow timer:
+    Flow value input field - enabled
+    Add button - enabled
+    Start 3-minute rest timer
+
+    With flow value on input field, press Add:
+    A new Reading object is added to the reading list for current session
+    Add button - disabled
+    Flow value input field - cleared, disabled
+
+    After end of 3-minute rest timer:
+    Start 7-minute Flow timer
+    Take note of starting time (will be used for Reading value, store in class variable)
+    Reset currentSession
+
+    On Click of Save button:
+    Save to database the Session information
+    Save to database the Readings in the current session with the assigned Session ID
+    Show close dialog
+    Close SessionActivity
+    Refresh HomeActivity, show new Session in RecyclerView
+
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,16 +114,17 @@ public class SessionActivity extends AppCompatActivity {
                 LinearLayoutManager.VERTICAL, false);
         recyclerReadings.setLayoutManager(layoutManager);
 
+        // Initialize object placeholders
+        currentReading = new Reading();
+        currentSession = new Session();
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        // Create new session
-        session = new Session();
-
-        // generate new session id here
+        init();
 
         flowTimer = new CountDownTimer(SEVEN_MINUTES, ONE_SECOND) {
             @Override
@@ -146,6 +188,13 @@ public class SessionActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public void init() {
+        // generate session id
+        int sessionId = db.getSessionCount() + 1;
+        currentSession.setId(String.valueOf(sessionId));
+        currentSession.setDate(String.valueOf(System.currentTimeMillis()));
+    }
+
     private void showReadings() {
         List<Reading> readings = db.getAllReading();
 
@@ -207,6 +256,9 @@ public class SessionActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             flowTimer.start();
+
+            currentReading.setTime(String.valueOf(System.currentTimeMillis()));
+
             enableControlButtons();
             setStartButtonEnabled(false);
         }
@@ -239,7 +291,7 @@ public class SessionActivity extends AppCompatActivity {
 
             Reading reading = new Reading();
             reading.setId(getNextKey());
-            reading.setTime(String.valueOf(time));
+            reading.setTime(currentReading.getTime());
             reading.setFlowValue(input);
             reading.setSessionOrder(orderCount);
             reading.setSessionId(bundle.getInt("session_id"));

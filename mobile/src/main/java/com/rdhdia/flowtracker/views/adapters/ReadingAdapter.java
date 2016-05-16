@@ -58,9 +58,9 @@ public class ReadingAdapter extends RecyclerView.Adapter<ReadingAdapter.ViewHold
 
         Reading reading = items.get(position);
 
-        holder.time.setText(reading.getTime());
+        holder.time.setText(reading.getReadableTime());
 
-        holder.date.setText(reading.getTime());
+        holder.date.setText(reading.getReadableDate());
 
         holder.value.setText(reading.getFlowValue());
 

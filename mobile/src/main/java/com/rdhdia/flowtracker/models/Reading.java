@@ -1,5 +1,11 @@
 package com.rdhdia.flowtracker.models;
 
+import android.util.Log;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by ruffyheredia on 14/04/2016.
  */
@@ -60,5 +66,19 @@ public class Reading {
 
     public void setSessionId(int sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public String getReadableTime() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+        long millis = Long.valueOf(this.getTime());
+        String readableTime = format.format(new Date(millis));
+        return readableTime;
+    }
+
+    public String getReadableDate() {
+        SimpleDateFormat format = new SimpleDateFormat("MMM dd yyyy");
+        long millis = Long.valueOf(this.getTime());
+        String readableDate = format.format(new Date(millis));
+        return readableDate;
     }
 }

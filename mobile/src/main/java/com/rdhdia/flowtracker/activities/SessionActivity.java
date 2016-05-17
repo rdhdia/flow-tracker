@@ -1,6 +1,8 @@
 package com.rdhdia.flowtracker.activities;
 
 import android.content.DialogInterface;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
@@ -137,6 +139,8 @@ public class SessionActivity extends AppCompatActivity {
         flowTimer = new CountDownTimer(SEVEN_MINUTES, ONE_SECOND) {
             @Override
             public void onTick(long millisUntilFinished) {
+                if ( millisUntilFinished < 3000 ) beep();
+
                 millisUntilFinished = (millisUntilFinished + 500) / 1000 * 1000;
                 Log.d(TAG, "Flow onTick: " + millisUntilFinished + "ms");
                 long minute = millisUntilFinished / ONE_MINUTE;
@@ -162,6 +166,8 @@ public class SessionActivity extends AppCompatActivity {
         restTimer = new CountDownTimer(THREE_MINUTES, ONE_SECOND) {
             @Override
             public void onTick(long millisUntilFinished) {
+                if ( millisUntilFinished < 3000 ) beep();
+
                 Log.d(TAG, "Rest onTick: " + millisUntilFinished + "ms");
                 long minute = millisUntilFinished / ONE_MINUTE;
                 long seconds = (millisUntilFinished / 1000) % 60;
@@ -203,6 +209,15 @@ public class SessionActivity extends AppCompatActivity {
         int sessionId = db.getSessionCount() + 1;
         currentSession.setId(String.valueOf(sessionId));
         currentSession.setDate(String.valueOf(System.currentTimeMillis()));
+    }
+
+    private void beep() {
+        try {
+            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showReadings() {

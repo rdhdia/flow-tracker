@@ -14,6 +14,9 @@ import com.rdhdia.flowtracker.BuildConfig;
 import com.rdhdia.flowtracker.R;
 import com.rdhdia.flowtracker.models.Session;
 
+import org.w3c.dom.Text;
+
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -25,12 +28,16 @@ import butterknife.ButterKnife;
 public class SessionAdapter  extends RecyclerView.Adapter<SessionAdapter.ViewHolder> {
 
     private List<Session> items;
+    private HashMap<String, Integer> counts;
     private Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.lblSessionId)
         TextView sessionId;
+
+        @Bind(R.id.lblReadingsCount)
+        TextView readingsCount;
 
         @Bind(R.id.layoutSession)
         LinearLayout layout;
@@ -42,8 +49,9 @@ public class SessionAdapter  extends RecyclerView.Adapter<SessionAdapter.ViewHol
 
     }
 
-    public SessionAdapter(List<Session> items, Context context) {
+    public SessionAdapter(List<Session> items, HashMap<String, Integer> counts, Context context) {
         this.items = items;
+        this.counts = counts;
         this.context = context;
     }
 
@@ -65,6 +73,8 @@ public class SessionAdapter  extends RecyclerView.Adapter<SessionAdapter.ViewHol
 
         holder.sessionId.setText(session.getId());
 
+        holder.readingsCount.setText(counts.get(session.getId()) + " readings");
+
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,7 +82,7 @@ public class SessionAdapter  extends RecyclerView.Adapter<SessionAdapter.ViewHol
                 intent.setClassName(BuildConfig.APPLICATION_ID,
                         BuildConfig.APPLICATION_ID + ".activities.SessionDetailsActivity");
                 intent.putExtra("session_id", session.getId());
-                ((Activity)context).startActivity(intent);
+                context.startActivity(intent);
             }
         });
     }

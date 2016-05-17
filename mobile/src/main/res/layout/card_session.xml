@@ -4,15 +4,34 @@
     android:id="@+id/layoutSession"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/lblSessionId"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:text="session_id" />
+        android:background="@color/colorAccent"
+        android:layout_margin="2dp">
+
+        <TextView
+            android:id="@+id/lblSessionId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="session_id"
+            android:textColor="@color/textColorDefault" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="num_readings"
+            android:id="@+id/lblReadingsCount"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/textColorDefault" />
+
+    </LinearLayout>
 
 </LinearLayout>

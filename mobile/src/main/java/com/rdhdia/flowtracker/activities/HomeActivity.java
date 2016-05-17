@@ -15,6 +15,7 @@ import com.rdhdia.flowtracker.models.Session;
 import com.rdhdia.flowtracker.utils.DatabaseHandler;
 import com.rdhdia.flowtracker.views.adapters.SessionAdapter;
 
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -53,8 +54,15 @@ public class HomeActivity extends AppCompatActivity {
 
         List<Session> sessions = db.getAllSession();
 
+        HashMap<String, Integer> readingCounts = new HashMap<>();
+
+        for ( Session session : sessions ) {
+            int sessionReadings = db.getReadingCountBySessionId(Integer.valueOf(session.getId()));
+            readingCounts.put(session.getId(), sessionReadings);
+        }
+
         if ( sessions.size() > 0 ) {
-            SessionAdapter adapter = new SessionAdapter(sessions, HomeActivity.this);
+            SessionAdapter adapter = new SessionAdapter(sessions, readingCounts, HomeActivity.this);
             recyclerSessions.setAdapter(adapter);
         } else {
             Toast.makeText(HomeActivity.this, "No sessions found", Toast.LENGTH_SHORT).show();

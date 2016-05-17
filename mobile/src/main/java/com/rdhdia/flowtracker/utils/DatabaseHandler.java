@@ -496,6 +496,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return count;
     }
 
+    // Get reading count by session ID
+    public int getReadingCountBySessionId(int sessionId) {
+        String countQuery = "SELECT * FROM " + TABLE_READING
+                + " WHERE " + READING_SESSION_ID + "=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery,
+                new String[] { String.valueOf(sessionId) } );
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+
     // Update a Session
     public int updateSession(Session session) {
         SQLiteDatabase db  = this.getWritableDatabase();

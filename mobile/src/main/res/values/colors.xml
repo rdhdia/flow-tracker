@@ -10,4 +10,6 @@
 
     <color name="buttonTextEnabled">#FFFFFFFF</color>
     <color name="buttonTextDisabled">#FF111111</color>
+
+    <color name="textColorDefault">#FFFFFFFF</color>
 </resources>
